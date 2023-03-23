@@ -1,6 +1,7 @@
-requests
-pandas
 streamlit
-icalendar
+requests
 scipy
 matplotlib
+pandas
+icalendar
+
