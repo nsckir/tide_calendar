@@ -229,16 +229,20 @@ class TidePredictor:
 
 if __name__ == "__main__":
 
-    st.title("Tide Predictor")
+    st.title("Tide Calendar Generator")
 
-    st.write("This app retrieves tide data from the NOAA API and creates an iCalendar file with high tide intervals.")
+    st.write("This app retrieves tide data from the NOAA API and creates an iCalendar file with intervals in a specified tide heights.")
 
-    station_id = st.text_input("Enter the station ID:")
-    begin_date = st.text_input("Enter the start date (YYYYMMDD):")
-    end_date = st.text_input("Enter the end date (YYYYMMDD):")
+    station_id = st.text_input("Enter the station ID (Get one from here https://tidesandcurrents.noaa.gov/tide_predictions.html):", "TWC0419")
+    # begin_date = st.text_input("Enter the start date (YYYYMMDD):")
+    b = st.date_input("Enter the start date", datetime.today())
+    begin_date = b.strftime("%Y%m%d")
+    # end_date = st.text_input("Enter the end date (YYYYMMDD):")
+    e = st.date_input("Enter the end date", datetime.today()+ datetime.timedelta(days=7))
+    end_date = e.strftime("%Y%m%d")
     units = st.selectbox("Select the units:", ["metric", "english"])
-    low = st.number_input("Enter the low tide threshold (meters):", min_value=0.0, max_value=10.0, step=0.1)
-    high = st.number_input("Enter the high tide threshold (meters):", min_value=0.0, max_value=10.0, step=0.1)
+    low = st.number_input("Enter the low limit:", min_value=-20.0, max_value=20.0, step=0.1)
+    high = st.number_input("Enter the high limit:", min_value=-20.0, max_value=20.0, step=0.1)
 
     if st.button("Run"):
         tidepredictor = TidePredictor(station_id, begin_date, end_date, units=units, low=low, high=high)
