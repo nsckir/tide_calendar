@@ -3,3 +3,4 @@ pandas
 streamlit
 icalendar
 scipy
+matplotlib
