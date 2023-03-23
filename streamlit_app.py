@@ -255,8 +255,8 @@ if __name__ == "__main__":
     
     units = st.selectbox("Select the units:", ["metric", "english"])
     
-    high = st.number_input("Enter the high limit:", value=2.0)
-    low = st.number_input("Enter the low limit:", value=-1.0)
+    high = st.number_input("Enter the high limit:", value=1.5)
+    low = st.number_input("Enter the low limit:", value=0.5)
 
 
     if st.button("Run"):
