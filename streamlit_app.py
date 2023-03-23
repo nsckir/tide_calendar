@@ -2,7 +2,7 @@ import requests
 import json
 import pandas as pd
 import streamlit as st
-
+import base64
 from icalendar import Calendar, Event
 from datetime import datetime, timezone, timedelta
 
@@ -203,6 +203,13 @@ class TidePredictor:
         # write ical file
         with open('mycalendar.ics', 'wb') as f:
             f.write(cal.to_ical())
+            
+        # create a download button for the ical file
+        with open('mycalendar.ics', 'rb') as f:
+            contents = f.read()
+            b64 = base64.b64encode(contents).decode()
+            href = f'<a href="data:file/ics;base64,{b64}" download="mycalendar.ics">Download iCalendar file</a>'
+            st.markdown(href, unsafe_allow_html=True)
             
     def run(self):
         """This function runs the entire process of retrieving data, interpolating, and creating an iCalendar file.
