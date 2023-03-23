@@ -1,7 +1,2 @@
-streamlit
-requests
-scipy
-matplotlib
-pandas
 icalendar
 
