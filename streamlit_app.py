@@ -5,6 +5,7 @@ import streamlit as st
 import base64
 from icalendar import Calendar, Event
 from datetime import datetime, timezone, timedelta
+import matplotlib.pyplot as plt
 
 class TidePredictor:
     """Initializes a TidePredictor object with the given parameters.
@@ -136,24 +137,24 @@ class TidePredictor:
         self.intervals = intervals
 
 
-    # def plot_tides(self):
-    #     # plot the highs and lows with a smooth line
-    #     fig, ax = plt.subplots()
-    #     ax.plot(self.interpolated_tides.index, self.interpolated_tides['height'])
-    #     ax.plot(self.tides.index, self.tides['height'], 'o', color='red')
-    #     # Plot horizontal line at 0
-    #     if self.low:
-    #         ax.axhline(y=self.low, color='black', linestyle='-')
-    #     if self.high:
-    #         ax.axhline(y=self.high, color='black', linestyle='-')
+    def plot_tides(self):
+        # plot the highs and lows with a smooth line
+        fig, ax = plt.subplots()
+        ax.plot(self.interpolated_tides.index, self.interpolated_tides['height'])
+        ax.plot(self.tides.index, self.tides['height'], 'o', color='red')
+        # Plot horizontal line at 0
+        if self.low:
+            ax.axhline(y=self.low, color='black', linestyle='-')
+        if self.high:
+            ax.axhline(y=self.high, color='black', linestyle='-')
 
-    #     for i in self.intervals:
-    #         # plot the intervals
-    #         ax.axvspan(i[0], i[1], facecolor='green', alpha=0.1)
+        for i in self.intervals:
+            # plot the intervals
+            ax.axvspan(i[0], i[1], facecolor='green', alpha=0.1)
 
-    #     fig.set_size_inches(18.5, 10.5)
-    #     plt.show()
 
+        st.pyplot(fig)
+    
 
 
     def get_station_info(self):
@@ -224,6 +225,7 @@ class TidePredictor:
         self.interpolate_tides()
         self.get_intervals()
         self.get_station_info()
+        self.plot_tides()
         self.create_ical_file()
 
 
@@ -234,15 +236,16 @@ if __name__ == "__main__":
     st.write("This app retrieves tide data from the NOAA API and creates an iCalendar file with intervals in a specified tide heights.")
 
     station_id = st.text_input("Enter the station ID (Get one from here https://tidesandcurrents.noaa.gov/tide_predictions.html):", "TWC0419")
-    # begin_date = st.text_input("Enter the start date (YYYYMMDD):")
+    
     b = st.date_input("Enter the start date", datetime.today())
     begin_date = b.strftime("%Y%m%d")
-    # end_date = st.text_input("Enter the end date (YYYYMMDD):")
     e = st.date_input("Enter the end date", datetime.today() + timedelta(days=7))
     end_date = e.strftime("%Y%m%d")
+    
     units = st.selectbox("Select the units:", ["metric", "english"])
-    low = st.number_input("Enter the low limit:", min_value=-20.0, max_value=20.0, step=0.1)
-    high = st.number_input("Enter the high limit:", min_value=-20.0, max_value=20.0, step=0.1)
+    
+    low = st.number_input("Enter the low limit:")
+    high = st.number_input("Enter the high limit:")
 
     if st.button("Run"):
         tidepredictor = TidePredictor(station_id, begin_date, end_date, units=units, low=low, high=high)
