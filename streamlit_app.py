@@ -238,7 +238,7 @@ if __name__ == "__main__":
     b = st.date_input("Enter the start date", datetime.today())
     begin_date = b.strftime("%Y%m%d")
     # end_date = st.text_input("Enter the end date (YYYYMMDD):")
-    e = st.date_input("Enter the end date", datetime.today()+ datetime.timedelta(days=7))
+    e = st.date_input("Enter the end date", datetime.today() + timedelta(days=7))
     end_date = e.strftime("%Y%m%d")
     units = st.selectbox("Select the units:", ["metric", "english"])
     low = st.number_input("Enter the low limit:", min_value=-20.0, max_value=20.0, step=0.1)
