@@ -1,2 +1,3 @@
 icalendar
 matplotlib
+scipy
