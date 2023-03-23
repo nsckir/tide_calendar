@@ -114,13 +114,14 @@ class TidePredictor:
         
         intervals = []
         start = None
-
+        end = None
+        
         def check_interval(v):
-            if self.low and self.high:
+            if self.low is not None and self.high is not None:
                 return (v < self.high) and (v > self.low)
-            elif self.low:
+            elif self.low is not None:
                 return v > self.low
-            elif self.high:
+            elif self.high is not None:
                 return v < self.high
             else:
                 return True
@@ -134,6 +135,10 @@ class TidePredictor:
                     end = t
                     intervals.append((start, end))
                     start = None
+                    end = None
+        if start is not None and end is None:
+            intervals.append((start, self.interpolated_tides.index[-1]))
+            
         self.intervals = intervals
 
 
@@ -143,15 +148,21 @@ class TidePredictor:
         ax.plot(self.interpolated_tides.index, self.interpolated_tides['height'])
         ax.plot(self.tides.index, self.tides['height'], 'o', color='red')
         # Plot horizontal line at 0
-        if self.low:
+        if self.low is not None:
             ax.axhline(y=self.low, color='black', linestyle='-')
-        if self.high:
+        if self.high is not None:
             ax.axhline(y=self.high, color='black', linestyle='-')
 
         for i in self.intervals:
             # plot the intervals
             ax.axvspan(i[0], i[1], facecolor='green', alpha=0.1)
-
+            
+        fig.autofmt_xdate()
+        # add title and axis labels
+        ax.set_title('Tides at ' + self.station_info[0]['name'])
+        ax.set_xlabel('Date')
+        units = {'metric': 'meters', 'english': 'feet'}
+        ax.set_ylabel(f'Height ({units[self.units]})')
 
         st.pyplot(fig)
     
@@ -239,13 +250,14 @@ if __name__ == "__main__":
     
     b = st.date_input("Enter the start date", datetime.today())
     begin_date = b.strftime("%Y%m%d")
-    e = st.date_input("Enter the end date", datetime.today() + timedelta(days=7))
+    e = st.date_input("Enter the end date", datetime.today() + timedelta(days=3))
     end_date = e.strftime("%Y%m%d")
     
     units = st.selectbox("Select the units:", ["metric", "english"])
     
-    low = st.number_input("Enter the low limit:")
-    high = st.number_input("Enter the high limit:")
+    high = st.number_input("Enter the high limit:", value=2.0)
+    low = st.number_input("Enter the low limit:", value=-1.0)
+
 
     if st.button("Run"):
         tidepredictor = TidePredictor(station_id, begin_date, end_date, units=units, low=low, high=high)
